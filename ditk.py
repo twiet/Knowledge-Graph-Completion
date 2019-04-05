@@ -3,101 +3,77 @@ import abc
 class graph_completion(abc.ABC):	
 	# The output of each of the following methods should be defined clearly and shared between all methods implemented by members of the group. 
 	
-	@classmethod
 	@abc.abstractmethod
-	def read_dataset(cls, fileNames, options=None):
+	def read_dataset(self, fileName, options={}):
 		"""
 		Reads a dataset in preparation for: train or test. Returns data in proper format for: train or test.
 
 		Args:
-			cls: class instance
-			fileNames: list-like. List of files representing the dataset to read. Each element is str, representing 
-				filename [possibly with filepath]
+			fileName: Name of file representing the dataset to read
 			options: object to store any extra or implementation specific data
 
 		Returns:
-			A tuple (e.g. train_X, train_Y, dev_X, dev_Y, test_X, test_Y) in proper format for train and test. Dev set may be optional for some.
-			Note:
-				X: represents features and data instances [i.e. the data you want to train/predict on]
-				Y: represents the ground truth or labels for each of the data instances [i.e. the value/label you want to predict]
-
-		Raises:
-			None
+			Iterable data, optionally split into train, test, and possibly dev.
 		"""
 		pass
 
 
-	@classmethod
 	@abc.abstractmethod
-	def train(cls, data_X, data_Y, options=None):
+	def train(self, data, options={}):
 		"""
 		Trains a model on the given input data
 
 		Args:
-			cls: class instance
-			data_X: iterable of arbitrary format. represents the data instances and features you use to train your model.
-			data_Y: iterable of arbitrary format. represents the ground truth, used in training/optimizing your model.
-				Note: data_X and data_Y are in format returned by read_dataset_train() [i.e. read_dataset using 'train' mode]
+			data: iterable of arbitrary format
 			options: object to store any extra or implementation specific data
 
 		Returns:
-			ret: None. Trained model stored internally to class instance state. 
-
-		Raises:
-			None
+			ret: None. Trained model stored internally to instance's state. 
 		"""
 		pass
 
 
-	@classmethod
 	@abc.abstractmethod
-	def predict(cls, data_X, options=None):
+	def predict(self, data, options={}):
 		"""
-		Predicts on the given input data. Assumes model has been trained with train()
+		Predicts on the given input data (e.g. knowledge graph). Assumes model has been trained with train()
 
 		Args:
-			cls: class instance
-			data_X: iterable of arbitrary format. represents the data instances and features you use to make predictions
-				Note that prediction requires trained model. Precondition that class instance already stores rained model 
+			data: iterable of arbitrary format. represents the data instances and features you use to make predictions
+				Note that prediction requires trained model. Precondition: instance already stores trained model 
 				information.
 			options: object to store any extra or implementation specific data
 
 		Returns:
-			predictions: [tuple,...], i.e. list of tuples. 
-				Each tuple is (start index, span, mention text, mention type)
-				Where:
-				 - start index: int, the index of the first character of the mention span. None if not applicable.
-				 - span: int, the length of the mention. None if not applicable.
-				 - mention text: str, the actual text that was identified as a named entity. Required.
-				 - mention type: str, the entity/mention type. None if not applicable.
-
-				 NOTE: len(predictions) should equal len(data_X) AND the ordering should not change [important for 
-				 	evalutation. See note in evaluate() about parallel arrays.]
-				
-		Raises:
-			None
+			predictions: [tuple,...], i.e. list of predicted tuples. 
+				Each tuple likely will follow format: (subject_entity, relation, object_entity), but isn't required.
 		"""
 		pass
 
-	@classmethod
 	@abc.abstractmethod
-	def evaluate(cls, test_X, test_Y, options=None):
+	def evaluate(self, benchmark_data, metrics={}, options={}):
 		"""
-		Calculates evaluation metrics on chosen benchmark dataset [Precision,Recall,F1, or others...]
+		Calculates evaluation metrics on chosen benchmark dataset.
+		Precondition: model has been trained and predictions were generated from predict()
 
 		Args:
-			cls: class instance
-			predictions: [tuple,...], list of tuples [same format as output from predict]
-			groundTruths: [tuple,...], list of tuples representing ground truth.
-				precondition: len(predictions) == len(groundTruth) i.e. like parallel-array, so
-					prediction[i] and groundTruth[i] represent the prediction tuple and
-					the groundTruth tuple for the same datapoint i.
+			benchmark_data: Iterable testing split of dataset to evaluate on
+			metrics: Dictionary of function pointers for desired evaluation metrics (e.g. F1, MRR, etc.)
+				- Note: This abstract base class does not enforce a metric because some metrics are more appropriate 
+				for a given benchmark than others. At least one metric should be specified
+				- example format:
+					metrics = {
+						"F1": f1_eval_function,
+						"MRR": mrr_eval_function
+					}
 			options: object to store any extra or implementation specific data
 
 		Returns:
-			metrics: tuple with (p,r,f1). Each element is float.
-
-		Raises:
-			None
+			evaluations: dictionary of scores with respect to chosen metrics
+				- e.g.
+					evaluations = {
+						"f1": 0.5,
+						"MRR": 0.8
+					}
 		"""
 		pass
