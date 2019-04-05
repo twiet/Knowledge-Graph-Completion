@@ -1,8 +1,9 @@
 # CSCI 548 Group 8: Knowledge-Graph-Completion (ditk.graph_completion)
 
 ## Deliverables
-1. DITKModel.py - abstract class with abstract methods
-2. DITKModel_Impl.py - implmentation of DITKModel with methods structures ditk.graph_completion.\<methodname\>
+1. graph_completion.py - abstract class with abstract methods
+2. \<module_name\>.py - implementation of KG completion model (1 per selected KG completion repository)
+-- module hierarchy: ditk.graph_completion.\<module_name\>
 
 ## Benchmarks
 - WN18
@@ -15,6 +16,7 @@ Try to run model on all 3 datasets. If the dataset does not fit the format of yo
 - AUC
 - Average Precision
 - MRR
+- hit10
 
 Try to train and evaluate on each of the above benchmark datasets. Do not worry about the score. If you are unable to run on a specific benchmark, provide explaination why. If you are unable to use an evaluation metric, specify why. 
 
