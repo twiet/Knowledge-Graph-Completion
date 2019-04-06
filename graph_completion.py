@@ -1,6 +1,6 @@
 import abc
 
-class graph_completion(abc.ABC):	
+class GraphCompletion(abc.ABC):	
 	# The output of each of the following methods should be defined clearly and shared between all methods implemented by members of the group. 
 	
 	@abc.abstractmethod
