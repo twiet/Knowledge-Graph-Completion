@@ -16,7 +16,7 @@ Try to run model on all 3 datasets. If the dataset does not fit the format of yo
 - AUC
 - Average Precision
 - MRR
-- hit10
+- HITS@10
 
 Try to train and evaluate on each of the above benchmark datasets. Do not worry about the score. If you are unable to run on a specific benchmark, provide explaination why. If you are unable to use an evaluation metric, specify why. 
 
